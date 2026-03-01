@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/funcionarios_item.dart'; // Ajuste o caminho se a sua pasta for diferente
+import '../models/funcionarios_item.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool isLoading = false;
