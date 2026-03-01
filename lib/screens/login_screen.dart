@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'home_screen.dart';
+import 'package:pet_shop_app/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen();
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomeScreen(nomeUsuario: nomeDoUsuario),
+              builder: (context) => HomeScreen(nomeUsuario: 'leo',),
             ),
           );
         }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'screens/login_screen.dart';
+import 'package:pet_shop_app/screens/pag_inicial_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
@@ -14,7 +14,7 @@ void main() async {
 }
 
 class PetShopApp extends StatelessWidget {
-  const PetShopApp();
+  const PetShopApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class PetShopApp extends StatelessWidget {
           fillColor: Colors.white,
         ),
       ),
-      home: const LoginScreen(), // Define a tela inicial
+      home: const PagInicialScreen(), // Define a tela inicial
     );
   }
 }

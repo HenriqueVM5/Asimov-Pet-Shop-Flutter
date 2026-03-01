@@ -6,7 +6,7 @@ import 'package:pet_shop_app/models/estoque_item.dart';
 //StreamProvider para pegar dados dirteto do firebase 24h e conseguir manter a lista atualizada
 //independente de a atualizção da lista ser via desk ou via mobile
 
-final produtosProvider = StreamProvider<List<Estoque>>((ref) {
+final estoqueProvider = StreamProvider<List<Estoque>>((ref) {
   // Conexão coma a coleção 'Estoque' do Firebase via snapshots para atualizar a lista constantemente
   return FirebaseFirestore.instance
       .collection('estoque')

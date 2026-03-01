@@ -9,7 +9,7 @@ import 'package:pet_shop_app/models/produto_item.dart';
 final produtosProvider = StreamProvider<List<Produto>>((ref) {
   // Conexão coma a coleção 'produtos' do Firebase via snapshots para atualizar a lista constantemente
   return FirebaseFirestore.instance
-      .collection('produtos')
+      .collection('produto')
       .snapshots()
       .map((snapshot) {
     // Transforma os dados do Firebase em uma Lista de Produtos atravez da funçao Produto.fromMap criada no model produtos
