@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/funcionarios_item.dart';
+import 'package:google_sign_in/google_sign_in.dart' as googleAuth;
 
 class AuthProvider extends ChangeNotifier {
   bool isLoading = false;
@@ -43,6 +44,55 @@ class AuthProvider extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
       return 'Erro inesperado: $e'; // Erro genérico
+    }
+  }
+
+  Future<String?> signInWithGoogle() async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      final googleAuth.GoogleSignIn googleSignIn =
+          googleAuth.GoogleSignIn.instance;
+      await googleSignIn.initialize();
+
+      final googleAuth.GoogleSignInAccount googleUser = await googleSignIn
+          .authenticate(scopeHint: ['email']);
+
+      final googleAuth.GoogleSignInAuthentication googleAuthKeys =
+          googleUser.authentication;
+
+      final String? idToken = googleAuthKeys.idToken;
+      if (idToken == null) {
+        isLoading = false;
+        notifyListeners();
+        return 'Não foi possível obter idToken do Google.';
+      }
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      isLoading = false;
+      notifyListeners();
+      return null;
+    } on googleAuth.GoogleSignInException catch (e) {
+      isLoading = false;
+      notifyListeners();
+      if (e.code == googleAuth.GoogleSignInExceptionCode.canceled) {
+        return 'Login cancelado pelo usuário.';
+      }
+      return 'Erro no Google Sign-In: ${e.description ?? e.code}';
+    } on FirebaseAuthException catch (e) {
+      isLoading = false;
+      notifyListeners();
+      return 'Erro na autenticação: ${e.message}';
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+      return 'Erro inesperado: $e';
     }
   }
 }
