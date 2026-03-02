@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_shop_app/screens/login_screen.dart';
 
-//
+//codigo da tela inicial
+//botão de login leva a tela de login e botão de cadastro a tela de cadastro
 
 class PagInicialScreen extends StatelessWidget {
   const PagInicialScreen({super.key});
@@ -10,215 +11,132 @@ class PagInicialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       
       
-    // config do gradiente do topo da tela 
       body: Container(
+        //criação do background com gradiente assim como no figma
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topRight, 
             end: Alignment.bottomLeft, 
             colors: [
-              Color(0xFF8AD8FF), // Azul claro no topo
-              Color(0xFFFFFFFF), // Branco embaixo
+              Color(0xFF8AD8FF), 
+              Color(0xFFFFFFFF), 
             ],
             stops: [0.0, 0.40], 
           ),
         ),
-       //safeArea e fitbox para ajustar proporcionalmente a tela a quaquer aparelho
+        //safeare e fittedbox para adaptar a tela de acordo com o tamnho do display
         child: SafeArea(
           child: Center(
             child: FittedBox(
               fit: BoxFit.contain,
               child: SizedBox(
-                width: 375, // Tamanho base do Figma
-                height: 812, //Altura base do Figma
+                width: 375, // Tamanho base do figma usado para fazer a proporção das imagens
+                height: 812, // Altura base do figma
                 child: Stack(
-                  //Clip.none para ajustar a imagem ate o final da tela
                   clipBehavior: Clip.none, 
                   children: [
                     
                     
-                  //Vetor atras do cachorro e gato
+                    // Config animais + vetor fundo, valores atravez de teste
                     Positioned(
-                      top: 150,
-                      left: -15,
-                      right: -55, 
-                      child: Opacity(
-                        opacity: 0.8,
-                        child: SvgPicture.asset(
-                          "assets/Vector 1.svg", 
-                          height: 500,
-                          fit: BoxFit.contain,
+                      top: 110, 
+                      right: -39, 
+                      child: Image.asset(
+                        "assets/images/animais.png",
+                        width: 430, 
+                      ),
+                    ),
+
+                    
+                    //config HEADER (Logo + Nome)
+                    Positioned(
+                      top: 90,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Image.asset(
+                          "assets/images/Header.png",
+                          height: 75, 
                         ),
                       ),
                     ),
 
                     
-                  // Logo e nome da empresa no topo
+                    // Bola e Osso do topo
                     Positioned(
-                      top: 100,
-                      left: 0,
-                      right: 0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset("assets/Vector.svg", width: 60),
-                          const SizedBox(width: 8),
-                          const Text(
-                            "Habitat Pet",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  //bola + osso + mancha do topo
-                    Positioned(
-                      top: 50,
+                      top: 55,
                       right: 24,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Opacity(
-                            opacity: 0.8,
-                            child: SvgPicture.asset("assets/Vector 4.svg", width: 55, height: 55),
-                          ),
-                          Image.asset("assets/brinquedo-de-estimacao 2.png", width: 35, height: 35),
-                        ],
-                      ),
-                    ),
-
-                    
-                  // Config cachorro e gato
-                    //cachorro 
-                    Positioned(
-                      top: 167,
-                      right: -35, 
                       child: Image.asset(
-                        "assets/Adobe Express - file 1.png",
-                        width: 250,
+                        "assets/images/bola_osso_topo.png",
+                        width: 55, 
                       ),
                     ),
-                    // Gato 
+
+                    
+                    // Patinhas 
                     Positioned(
-                      top: 342,
-                      right: 65, 
+                      top: 250,
+                      left: 115, 
                       child: Image.asset(
-                        "assets/alexander-london-mJaD10XeD7w-unsplash-Photoroom 1.png",
-                        width: 190,
+                        "assets/images/patas.png", 
+                        width: 90,
                       ),
                     ),
 
-                    
-                  // Patinhas
-                    Positioned(top: 260, left: 150, child: Image.asset("assets/patas 1.png", width: 31)),
-                    Positioned(top: 275, left: 125, child: Image.asset("assets/patas 2.png", width: 33)),
-                    Positioned(top: 300, left: 160, child: Image.asset("assets/patas 3.png", width: 30)),
-                    Positioned(top: 285, left: 184, child: Image.asset("assets/patas 4.png", width: 28)),
 
-
-                  //Ícones flutuantes + machas
-                   //pote de ração
-                   Positioned(
-                      top: 340, 
-                      left: 30,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Transform.translate(
-                            offset: const Offset(0, 10), 
-                            child: Opacity(
-                              opacity: 0.8,
-                              child: SvgPicture.asset("assets/Vector 6.svg", width: 42, height: 42),
-                            ),
-                          ),//transfor.tranlate para poder posicionar o desenho em relação a mancha
-                          Image.asset("assets/racao-para-animais 2.png", width: 40, height: 40),
-                        ],
-                      ),
-                    ),
-                    
-                    //bolinhas
+                    // Brinquedos ao lado dos animais
                     Positioned(
-                      top: 440, 
-                      left: 80,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Transform.translate(
-                            offset: const Offset(7, 0), 
-                            child: Opacity(
-                              opacity: 0.8,
-                              child: SvgPicture.asset("assets/Vector 2.svg", width: 40, height: 40),
-                            ),
-                          ),//transfor.tranlate para poder posicionar o desenho em relação a mancha
-                          Image.asset("assets/bola-de-cachorro 2.png", width: 45, height: 45), 
-                        ],
+                      top: 315, 
+                      left: 10, 
+                      child: Image.asset(
+                        "assets/images/elementos_graficos_ini.png", 
+                        width: 120, 
                       ),
                     ),
 
-                    //pacote de ração
-                    Positioned(
-                      top: 540, 
-                      left: 60,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Transform.translate(
-                            offset: const Offset(0, 11),
-                            child: Opacity(
-                              opacity: 0.8,
-                              child: SvgPicture.asset("assets/Vector 7.svg", width: 41, height: 41), 
-                            ),
-                          ),//transfor.tranlate para poder posicionar o desenho em relação a mancha
-                          Image.asset("assets/racao-para-animais-de-estimacao 2.png", width: 43, height: 43), 
-                        ],
-                      ),
-                    ),
 
-                    
-                   //Botões
-                    //Botão de cadastro
+                    //Botões
                     Positioned(
-                      bottom: 40,
+                      bottom: 30,
                       left: 24,
                       right: 24,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          
+                          // Botão de cadastrar
                           ElevatedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(), //substituir pelo pag de cadsatro assim q pronta
-                                ),
+                                  builder: (context) => const LoginScreen(), 
+                                ),// Alterar para a tela de Cadastro depois
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF8AD8FF).withValues(alpha: 0.8), 
+                              backgroundColor: const Color(0xFF8AD8FF), 
                               elevation: 0,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: BorderRadius.circular(24), 
                               ),
                             ),
-                            child: const Text(
+                            child: Text(
                               'Cadastrar',
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF1E3A4C), 
+                                color: const Color(0xFF0A3351), 
                               ),
                             ),
                           ),
                           
                           const SizedBox(height: 16),
 
-                          //Botão de Login
+                          // Botão de login
                           OutlinedButton(
                             onPressed: () {
                               Navigator.push(
@@ -231,19 +149,19 @@ class PagInicialScreen extends StatelessWidget {
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               side: const BorderSide(
-                                color: Color(0xFF1E3A4C),
+                                color: Color(0xFF0A3351), 
                                 width: 2.5,
                               ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: BorderRadius.circular(24), 
                               ),
                             ),
-                            child: const Text(
+                            child: Text(
                               'Login',
-                              style: TextStyle(
+                              style: GoogleFonts.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF1E3A4C),
+                                color: const Color(0xFF0A3351), 
                               ),
                             ),
                           ),
