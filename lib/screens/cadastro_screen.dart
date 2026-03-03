@@ -168,7 +168,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 10),
 
                       // ICON DE PERFIL
                       Center(
@@ -297,7 +297,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         ),
                       ),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 25),
 
                       // BOTÃO AZULÃO "CADASTRAR"
                       ListenableBuilder(
@@ -315,16 +315,16 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                     backgroundColor: const Color(0xFF8AD8FF),
                                     foregroundColor: const Color(0xFF0A3351),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(24),
+                                      borderRadius: BorderRadius.circular(34),
                                     ),
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 16,
+                                      vertical: 9.75,
                                     ),
                                   ),
                                   child: Text(
                                     'Cadastrar',
                                     style: GoogleFonts.poppins(
-                                      fontSize: 20,
+                                      fontSize: 26,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -332,7 +332,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         },
                       ),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 20),
 
                       // RODAPÉ: "Ou"
                       Row(
@@ -341,7 +341,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           Expanded(
                             child: Container(
                               margin: const EdgeInsets.only(right: 15),
-                              height: 1,
+                              height: 1.20,
                               color: Colors.black,
                             ),
                           ),
@@ -351,14 +351,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                             style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 20,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w800,
                             ),
                           ),
                           // Fita da direita
                           Expanded(
                             child: Container(
                               margin: const EdgeInsets.only(left: 15),
-                              height: 1,
+                              height: 1.20,
                               color: Colors.black,
                             ),
                           ),
