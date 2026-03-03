@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pet_shop_app/screens/login_screen.dart';
+import 'package:pet_shop_app/screens/tela_principal.dart';
 
 //codigo da tela inicial
 //botão de login leva a tela de login e botão de cadastro a tela de cadastro
@@ -52,7 +53,7 @@ class PagInicialScreen extends StatelessWidget {
                     
                     //config HEADER (Logo + Nome)
                     Positioned(
-                      top: 90,
+                      top: 60,
                       left: 0,
                       right: 0,
                       child: Center(
@@ -66,7 +67,7 @@ class PagInicialScreen extends StatelessWidget {
                     
                     // Bola e Osso do topo
                     Positioned(
-                      top: 55,
+                      top: 45,
                       right: 24,
                       child: Image.asset(
                         "assets/images/bola_osso_topo.png",
@@ -112,7 +113,7 @@ class PagInicialScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const LoginScreen(), 
+                                  builder: (context) => const TelaPrincipal(), 
                                 ),// Alterar para a tela de Cadastro depois
                               );
                             },
