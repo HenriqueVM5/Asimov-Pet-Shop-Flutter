@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Estoque {
   final String produtoId; // Referência ao ID do Produto no Firebase
   final String lote;
@@ -23,9 +25,9 @@ class Estoque {
       'produtoId': produtoId,
       'lote': lote,
       'qtd': qtd,
-      'dataVal': dataVal.toIso8601String(),
-      'dataCad': dataCad.toIso8601String(),
-      'dataUltEdit': dataUltEdit.toIso8601String(),
+      'dataVal': Timestamp.fromDate(dataVal),
+      'dataCad': Timestamp.fromDate(dataCad),
+      'dataUltEdit': Timestamp.fromDate(dataUltEdit),
       'userEdit': userEdit,
     };
   }
@@ -36,9 +38,9 @@ class Estoque {
       produtoId: map['produtoId'] ?? '',
       lote: map['lote'] ?? '',
       qtd: map['qtd']?.toInt() ?? 0,
-      dataVal: DateTime.parse(map['dataVal']),
-      dataCad: DateTime.parse(map['dataCad']),
-      dataUltEdit: DateTime.parse(map['dataUltEdit']),
+      dataVal: (map['dataVal'] as Timestamp).toDate(),
+      dataCad: (map['dataCad'] as Timestamp).toDate(),
+      dataUltEdit: (map['dataUltEdit'] as Timestamp).toDate(),
       userEdit: map['userEdit'] ?? '',
     );
   }

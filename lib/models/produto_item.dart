@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Produto {
   final String nome;
   final String tipo;
@@ -26,8 +28,8 @@ class Produto {
       'tipo': tipo,
       'marca': marca,
       // Convertendo a data para texto padrão (ISO) pro Firebase entender
-      'dataCad': dataCad.toIso8601String(),
-      'dataEdit': dataEdit.toIso8601String(),
+      'dataCad': Timestamp.fromDate(dataCad),
+      'dataEdit': Timestamp.fromDate(dataEdit),
       'userEdit': userEdit,
       'descricao': descricao,
       'cod': cod,
@@ -40,8 +42,8 @@ class Produto {
       nome: map['nome'] ?? '',
       tipo: map['tipo'] ?? '',
       marca: map['marca'] ?? '',
-      dataCad: DateTime.parse(map['dataCad']),
-      dataEdit: DateTime.parse(map['dataEdit']),
+      dataCad: (map['dataCad'] as Timestamp).toDate(),
+      dataEdit: (map['dataEdit'] as Timestamp).toDate(),
       userEdit: map['userEdit'] ?? '',
       descricao: map['descricao'] ?? '',
       cod: map['cod'],
