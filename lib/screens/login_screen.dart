@@ -54,6 +54,26 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _loginGoogle() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    String? erro = await authProvider.signInWithGoogle();
+
+    if (erro == null) {
+      print("Login com Google feito com sucesso!");
+
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(erro), backgroundColor: Colors.redAccent),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -329,7 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 GestureDetector(
-                                  onTap: () => print("Login Google"),
+                                  onTap: _loginGoogle,
                                   child: CircleAvatar(
                                     radius: 24,
                                     backgroundColor: Colors.transparent,
@@ -407,11 +427,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-// O FORMULÁRIO
-
-// ==========================================
-// ESTILO DOS CAMPOS DE TEXTO
-// ==========================================
+// ESTILOS DOS CAMPOS DE TEXTO
 InputDecoration _estiloCampo(String label, IconData icone) {
   return InputDecoration(
     hintText: label,
