@@ -98,6 +98,7 @@ class AuthProvider extends ChangeNotifier {
           googleUser.authentication;
 
       final String? idToken = googleAuthKeys.idToken;
+
       if (idToken == null) {
         isLoading = false;
         notifyListeners();
@@ -108,11 +109,28 @@ class AuthProvider extends ChangeNotifier {
         idToken: idToken,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithCredential(credential);
 
-      isLoading = false;
-      notifyListeners();
-      return null;
+      final User? user = userCredential.user;
+
+      if (user != null) {
+        final docRef = FirebaseFirestore.instance
+            .collection('funcionarios')
+            .doc(user.email);
+
+        final doc = await docRef.get();
+
+        if (!doc.exists) {
+          Funcionario(
+            nome: user.displayName!,
+            email: user.email!,
+            senha: '',
+            codFunc: '',
+            perfil: Perfil.leitor,
+          );
+        }
+      }
     } on googleAuth.GoogleSignInException catch (e) {
       isLoading = false;
       notifyListeners();
