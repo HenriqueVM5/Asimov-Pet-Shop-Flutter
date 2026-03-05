@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_shop_app/screens/login_screen.dart';
 import '../models/funcionarios_item.dart';
 import '../providers/auth_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -92,7 +93,10 @@ class _CadastroScreenState extends State<CadastroScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          Navigator.pop(context); // Volta pro Login
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          ); // Volta pro Login
         }
       } else {
         if (mounted) {
