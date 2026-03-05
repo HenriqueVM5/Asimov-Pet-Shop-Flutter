@@ -25,9 +25,9 @@ class Estoque {
       'produtoId': produtoId,
       'lote': lote,
       'qtd': qtd,
-      'dataVal': dataVal.toIso8601String(),
-      'dataCad': dataCad.toIso8601String(),
-      'dataUltEdit': dataUltEdit.toIso8601String(),
+      'dataVal': Timestamp.fromDate(dataVal),
+      'dataCad': Timestamp.fromDate(dataCad),
+      'dataUltEdit': Timestamp.fromDate(dataUltEdit),
       'userEdit': userEdit,
     };
   }

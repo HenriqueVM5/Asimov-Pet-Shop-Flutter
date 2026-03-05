@@ -3,12 +3,14 @@ enum Perfil { administrador, estoquista, leitor }
 class Funcionario {
   final String nome;
   final String email;
+  final String senha;
   final String codFunc;
   final Perfil perfil;
 
   Funcionario({
     required this.nome,
     required this.email,
+    required this.senha,
     required this.codFunc,
     required this.perfil,
   });
@@ -29,6 +31,7 @@ class Funcionario {
       nome: map['nome'] ?? '',
       email: map['email'] ?? '',
       codFunc: map['codFunc'] ?? '',
+      senha: '', // O firebase armazena a senha, não precisamos dela.
 
       perfil: Perfil.values.firstWhere(
         (e) => e.name == map['perfil'],

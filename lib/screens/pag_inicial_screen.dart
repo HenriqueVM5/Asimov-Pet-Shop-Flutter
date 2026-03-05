@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_shop_app/screens/cadastro_screen.dart';
 import 'package:pet_shop_app/screens/login_screen.dart';
-import 'package:pet_shop_app/screens/tela_principal.dart';
+
 
 //codigo da tela inicial
 //botão de login leva a tela de login e botão de cadastro a tela de cadastro
@@ -113,8 +114,8 @@ class PagInicialScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const TelaPrincipal(), 
-                                ),// Alterar para a tela de Cadastro depois
+                                  builder: (context) => const CadastroScreen(), 
+                                ),
                               );
                             },
                             style: ElevatedButton.styleFrom(

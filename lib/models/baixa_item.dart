@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Baixa {
   final String itemEstId; // Referência ao ID do lote no Estoque
   final int qtd;
@@ -16,7 +18,7 @@ class Baixa {
     return {
       'itemEstId': itemEstId,
       'qtd': qtd,
-      'data': data.toIso8601String(),
+      'data': Timestamp.fromDate(data),
       'user': user,
     };
   }
@@ -26,7 +28,7 @@ class Baixa {
     return Baixa(
       itemEstId: map['itemEstId'] ?? '',
       qtd: map['qtd']?.toInt() ?? 0,
-      data: DateTime.parse(map['data']),
+      data: (map['data'] as Timestamp).toDate(),
       user: map['user'] ?? '',
     );
   }
