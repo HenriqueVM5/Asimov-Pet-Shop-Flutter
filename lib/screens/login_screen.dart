@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../widgets/recuperar_senha.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -238,7 +239,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ],
                                 ),
                                 GestureDetector(
-                                  onTap: () => print("Recuperação de senha"),
+                                  onTap: () {
+                                    // Chama a função nativa do Flutter para abrir pop-ups
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        // Chama a classe do pop-up
+                                        return const RecuperarSenhaDialog();
+                                      },
+                                    );
+                                  },
                                   child: const Text(
                                     'Esqueceu a senha?',
                                     style: TextStyle(
