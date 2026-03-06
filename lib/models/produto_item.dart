@@ -9,6 +9,7 @@ class Produto {
   final String userEdit; // E-mail do funcionário que editou
   final String descricao;
   final String? cod; // Opcional (sem asterisco no UML)
+  final double? preco; 
 
   Produto({
     required this.nome,
@@ -19,9 +20,10 @@ class Produto {
     required this.userEdit,
     required this.descricao,
     this.cod,
+    required this.preco, 
   });
 
-  // Puxar as informações plain text do firebase afim de serem utilizadas como atributos da classe em questão.
+  // Transforma as informações da classe para plain text a fim de ser armazenada no firebase
   Map<String, dynamic> toMap() {
     return {
       'nome': nome,
@@ -33,10 +35,11 @@ class Produto {
       'userEdit': userEdit,
       'descricao': descricao,
       'cod': cod,
+      'preco': preco, 
     };
   }
 
-  // Puxar as informações plain text do firebase afim de serem utilizadas como atributos da classe em questão.
+  // Puxar as informações plain text do firebase a fim de serem utilizadas como atributos da classe
   factory Produto.fromMap(Map<String, dynamic> map) {
     return Produto(
       nome: map['nome'] ?? '',
@@ -47,6 +50,7 @@ class Produto {
       userEdit: map['userEdit'] ?? '',
       descricao: map['descricao'] ?? '',
       cod: map['cod'],
+      preco: (map['preco'] ?? 0.0).toDouble(), //puxa o preço do firebase e passa pra double
     );
   }
 }
