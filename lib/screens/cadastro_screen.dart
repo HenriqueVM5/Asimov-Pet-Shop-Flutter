@@ -261,7 +261,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         style: GoogleFonts.poppins(fontSize: 12),
                         decoration: _buildInputDecoration(
                           'Confirme sua senha',
-                          Icons.visibility_outlined,
+                          Icons.lock_outlined,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty)
@@ -390,9 +390,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                   context,
                                 ).showSnackBar(SnackBar(content: Text(erro)));
                               } else {
-                                Navigator.pushReplacementNamed(
+                                Navigator.pushReplacement(
                                   context,
-                                  '/home',
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
                                 );
                               }
                             },
