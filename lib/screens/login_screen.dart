@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pet_shop_app/screens/tela_principal.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/recuperar_senha.dart';
@@ -42,9 +43,14 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (erro == null) {
-        // Login com sucesso redireciona para a tela principal
-        print("Login com e-mail feito com sucesso!");
-        // TO-DO: Home
+        if (mounted) {
+          // navegação que limpa as paginas anteriores do historico
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const TelaPrincipal()),
+            (route) => false, 
+          );
+        }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -61,10 +67,13 @@ class _LoginScreenState extends State<LoginScreen> {
     String? erro = await authProvider.signInWithGoogle();
 
     if (erro == null) {
-      print("Login com Google feito com sucesso!");
-
       if (mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
+        // navegação que limpa as paginas anteriores do historico
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const TelaPrincipal()),
+          (route) => false,
+        );
       }
     } else {
       if (mounted) {

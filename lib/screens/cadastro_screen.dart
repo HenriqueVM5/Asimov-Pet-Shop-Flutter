@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_shop_app/screens/login_screen.dart';
+import 'package:pet_shop_app/screens/tela_principal.dart';
 import '../models/funcionarios_item.dart';
 import '../providers/auth_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -386,16 +387,23 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                   .signInWithGoogle();
 
                               if (erro != null) {
-                                ScaffoldMessenger.of(
-                                  context,
-                                ).showSnackBar(SnackBar(content: Text(erro)));
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(
+                                    context,
+                                  ).showSnackBar(SnackBar(content: Text(erro)));
+                                }
                               } else {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreen(),
-                                  ),
-                                );
+                                if (context.mounted) {
+                                  // Substituído o pushNamed pelo RemoveUntil
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TelaPrincipal(),
+                                    ),
+                                    (route) => false,
+                                  );
+                                }
                               }
                             },
 
