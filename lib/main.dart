@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 import 'package:pet_shop_app/screens/pag_inicial_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_shop_app/screens/tela_principal.dart';
 
 import 'package:provider/provider.dart';
 import 'package:pet_shop_app/providers/auth_provider.dart' as app_auth;
@@ -40,7 +42,22 @@ class PetShopApp extends StatelessWidget {
             fillColor: Colors.white,
           ),
         ),
-        home: const PagInicialScreen(), 
+       home: StreamBuilder<User?>(
+          // Verifica a autenticação do firebase
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            // Tela de caregamento enquanto faz a verificação
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(body: Center(child: CircularProgressIndicator()));
+            }
+            // Se o usuário logado vai direto a tela principal
+            if (snapshot.hasData) {
+              return const TelaPrincipal();
+            }
+            // Se não vai pra tela inicial
+            return const PagInicialScreen();
+          },
+        ),
       ),
     );
   }
