@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pet_shop_app/screens/login_screen.dart';
+import 'package:pet_shop_app/widgets/recuperar_senha.dart';
 import 'package:provider/provider.dart';
 import 'package:pet_shop_app/providers/auth_provider.dart' as app_auth;
 import 'package:pet_shop_app/screens/cadastro_screen.dart';
