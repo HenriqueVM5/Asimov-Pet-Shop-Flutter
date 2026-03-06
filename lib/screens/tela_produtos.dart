@@ -1,11 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:cloud_firestore/cloud_firestore.dart'; 
 import '../providers/produto_provider.dart';
 import '../components/card_tabela.dart';
 import '../components/popup_produtos.dart';
 
-//codigo que finaliza a tabela de card_tabela colocando as infos de produto
+//codigo que ussa o card_tabela para finalizar a logica e design da tabela de produtos
+
+
+// PROVEDOR DE PERMISSÕES (puxa o perfil de usuario direto do firebase)
+final perfilUsuarioProvider = StreamProvider<String>((ref) {
+  final user = FirebaseAuth.instance.currentUser;
+  
+  // Se por algum motivo não houver utilizador logado, bloqueia por segurança(deixando o perfil como leitor por padrão)
+  if (user == null || user.email == null) return Stream.value('leitor'); 
+
+  // se não retorna ao vivo oq esta setado no firebase
+  return FirebaseFirestore.instance
+      .collection('funcionarios')
+      .doc(user.email)
+      .snapshots()
+      .map((snapshot) {
+        if (snapshot.exists) {
+          return snapshot.data()?['perfil'].toString() ?? 'leitor'; 
+        }
+        return 'leitor';
+      });
+});
 
 class TelaProdutos extends ConsumerWidget {
   const TelaProdutos({super.key});
@@ -13,6 +36,15 @@ class TelaProdutos extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final produtosAsync = ref.watch(produtosProvider);
+    final perfilAsync = ref.watch(perfilUsuarioProvider); // provider de perfil do firebase
+
+
+    // Seta o valor da variave podeEditar a depender do perfil
+    // maybeWhen para deixar bloqueado enquanto a internet não verifica o perfil
+    bool podeEditar = perfilAsync.maybeWhen(
+      data: (perfilString) => !perfilString.toLowerCase().contains('leitor'),
+      orElse: () => false, 
+    );
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -24,12 +56,11 @@ class TelaProdutos extends ConsumerWidget {
       child: produtosAsync.when(
         data: (listaProdutos) {
           List<Widget> minhasLinhas = listaProdutos.map((produto) {
-            // regra de formatçaõ do preço vindo do firebase pra moeda brasileira
+            // Regra de formatação do preço vindo do firebase pra moeda brasileira
             final formatadorMoeda = NumberFormat.currency(
               locale: 'pt_BR',
               symbol: 'R\$',
             );
-            // Aplica a regra no seu preço
             String produtoPreco = formatadorMoeda.format(produto.preco);
 
             return CardTabela.construirLinha(
@@ -39,11 +70,11 @@ class TelaProdutos extends ConsumerWidget {
                 produto.marca,
                 produtoPreco,
               ],
+              podeEditar: podeEditar, 
               onMenuTap: () {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    
                     return PopupProdutos(produto: produto); 
                   },
                 );
@@ -52,9 +83,11 @@ class TelaProdutos extends ConsumerWidget {
           }).toList();
 
           return CardTabela(
-            tituloBotao: 'Adicionar produto',
+            titulo: 'Lista de Produtos',
+            podeEditar: podeEditar, 
             acaoBotao: () {
               // Todo: abrir forms de add produto
+              print("Botão de adicionar clicado!");
             },
             // cabeçalho especifico
             cabecalhos: const ['Nome', 'Tipo', 'Marca', 'Preço'],
@@ -63,7 +96,8 @@ class TelaProdutos extends ConsumerWidget {
         },
         loading: () {
           return const CardTabela(
-            tituloBotao: 'Adicionar produto',
+            titulo: 'Lista de Produtos',
+            podeEditar: false, // deixa semn permisão enquato carrega por segurança
             acaoBotao: null,
             cabecalhos: ['Nome', 'Tipo', 'Marca', 'Preço'],
             linhas: [],

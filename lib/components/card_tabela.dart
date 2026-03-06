@@ -2,29 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math';
 
-//codigo que faz as tabelas padrõoes para tela de produtos e estoque
+//Codigo responsavel pela criação das tabelas de produtos e estoque
 
 class CardTabela extends StatefulWidget {
-  final String tituloBotao;
+  final String titulo; 
   final VoidCallback? acaoBotao;
   final List<String> cabecalhos;
   final List<Widget> linhas; 
   final bool isLoading; 
+  final bool podeEditar; 
 
   const CardTabela({
     super.key,
-    required this.tituloBotao,
+    required this.titulo, 
     required this.acaoBotao,
     required this.cabecalhos,
     required this.linhas,
     this.isLoading = false,
+    this.podeEditar = true, 
   });
 
-
-  // Desing linhas brancas
+  // Criação linhas brancas
   static Widget construirLinha({
     required List<String> valores, 
     required VoidCallback onMenuTap,
+    bool podeEditar = true, 
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -36,60 +38,23 @@ class CardTabela extends StatefulWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center, 
         children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 6.0),
-              child: Text(
-                valores[0], 
-                style: _estiloLinha(),
-                maxLines: 2, 
-                overflow: TextOverflow.ellipsis, 
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 6.0),
-              child: Text(
-                valores[1], 
-                style: _estiloLinha(),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 6.0),
-              child: Text(
-                valores[2], 
-                style: _estiloLinha(),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 6.0),
-              child: Text(
-                valores[3], 
-                style: _estiloLinha(),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          // Ícone menu (tocavel) para edição ou exclusão de um item
-          GestureDetector(
-            onTap: onMenuTap,
-            child: const Icon(Icons.menu, size: 18, color: Colors.black),
-          )
+          Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[0], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
+          Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[1], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
+          Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[2], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
+          Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[3], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
+          //verificação se o usuario pode ou não editar
+          if (podeEditar)
+            GestureDetector(
+              onTap: onMenuTap,
+              child: const Icon(Icons.menu, size: 18, color: Colors.black), 
+            )
+          else 
+            const Icon(Icons.pets, size: 18, color: Colors.black), 
         ],
       ),
     );
   }
-  //estilo texto das linas brancas
+  //estilo do texto do conteudo das linhas brancas
   static TextStyle _estiloLinha() {
     return GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 10);
   }
@@ -110,77 +75,62 @@ class _CardTabelaState extends State<CardTabela> {
         color: const Color(0xff365665),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
       child: Column(
         children: [
-          // Botão add novo item
-          Align(
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              onPressed: widget.acaoBotao,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xff8ad8ff),
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+
+          // Rormatação do cabeçalho
+          Container(
+            width: double.infinity, 
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), 
+            decoration: BoxDecoration(
+              color: const Color(0xff8ad8ff),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                
+                Expanded(
+                  child: Text(
+                    widget.titulo,
+                    style: GoogleFonts.poppins(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                minimumSize: Size.zero, 
-              ),
-              child: Text(
-                widget.tituloBotao,
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+                
+                // Botão "+" que abre o forms de novo produto
+                if (widget.podeEditar) 
+                  GestureDetector(
+                    onTap: widget.acaoBotao,
+                    child: const SizedBox(
+                      width: 18,
+                      child: Icon(Icons.add, color: Colors.black, size: 22),
+                    ),
+                  )
+                else
+                  const SizedBox(width: 18),
+              ],
             ),
           ),
           
           const SizedBox(height: 16),
 
-
-          // Cabeçalho
+          // Configuração das Colunas (Nome, Tipo, Marca, Preço)
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-            decoration: BoxDecoration(
-              color: const Color(0xff6097b2),
-              borderRadius: BorderRadius.circular(10),
-            ),
+            decoration: BoxDecoration(color: const Color(0xff6097b2), borderRadius: BorderRadius.circular(10)),
             child: Row(
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 6.0),
-                    child: Text(widget.cabecalhos[0], style: _estiloCabecalho()),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 6.0),
-                    child: Text(widget.cabecalhos[1], style: _estiloCabecalho()),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 6.0),
-                    child: Text(widget.cabecalhos[2], style: _estiloCabecalho()),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 6.0),
-                    child: Text(widget.cabecalhos[3], style: _estiloCabecalho()),
-                  ),
-                ),
-                // Icone patinha
+                Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[0], style: _estiloCabecalho()))),
+                Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[1], style: _estiloCabecalho()))),
+                Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[2], style: _estiloCabecalho()))),
+                Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[3], style: _estiloCabecalho()))),
                 const Icon(Icons.pets, size: 18, color: Colors.black), 
               ],
             ),
@@ -188,14 +138,13 @@ class _CardTabelaState extends State<CardTabela> {
           
           const SizedBox(height: 12),
 
-          // regras da paginação
+          // Logica de paginação com os icones do rodape
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) {
                 const double alturaRodape = 30.0;
                 final double espacoLivre = constraints.maxHeight - alturaRodape;
-                
-                const double alturaLinha = 65.0; 
+                const double alturaLinha = 58.0; 
 
                 int itensDinamicos = (espacoLivre / alturaLinha).floor();
                 if (itensDinamicos < 1) itensDinamicos = 1;
@@ -228,39 +177,25 @@ class _CardTabelaState extends State<CardTabela> {
                                   children: linhasDaPagina,
                                 ),
                     ),
-                    
-                    // setinhas de paginação
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         GestureDetector(
                           onTap: () {
                             if (paginaSegura > 0) {
-                              setState(() {
-                                _paginaAtual = paginaSegura - 1;
-                              });
+                              setState(() => _paginaAtual = paginaSegura - 1);
                             }
                           },
-                          child: Icon(
-                            Icons.chevron_left, 
-                            color: paginaSegura > 0 ? Colors.white : Colors.white38, 
-                            size: 24,
-                          ),
+                          child: Icon(Icons.chevron_left, color: paginaSegura > 0 ? Colors.white : Colors.white38, size: 24),
                         ),
                         const SizedBox(width: 8),
                         GestureDetector(
                           onTap: () {
                             if (paginaSegura < totalPaginas - 1) {
-                              setState(() {
-                                _paginaAtual = paginaSegura + 1;
-                              });
+                              setState(() => _paginaAtual = paginaSegura + 1);
                             }
                           },
-                          child: Icon(
-                            Icons.chevron_right, 
-                            color: paginaSegura < totalPaginas - 1 ? Colors.white : Colors.white38, 
-                            size: 24,
-                          ),
+                          child: Icon(Icons.chevron_right, color: paginaSegura < totalPaginas - 1 ? Colors.white : Colors.white38, size: 24),
                         ),
                       ],
                     )
@@ -273,7 +208,7 @@ class _CardTabelaState extends State<CardTabela> {
       ),
     );
   }
-
+  //Estilização dos textos do cabeçalho
   TextStyle _estiloCabecalho() {
     return GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w800, fontSize: 12);
   }

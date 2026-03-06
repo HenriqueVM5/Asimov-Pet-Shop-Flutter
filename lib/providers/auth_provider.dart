@@ -122,13 +122,14 @@ class AuthProvider extends ChangeNotifier {
         final doc = await docRef.get();
 
         if (!doc.exists) {
-          Funcionario(
-            nome: user.displayName!,
-            email: user.email!,
+          final funcionario = Funcionario(
+            nome: user.displayName ?? '',
+            email: user.email ?? '',
             senha: '',
             codFunc: '',
             perfil: Perfil.leitor,
           );
+          await docRef.set(funcionario.toMap());
         }
       }
     } on googleAuth.GoogleSignInException catch (e) {
