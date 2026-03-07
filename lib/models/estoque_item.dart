@@ -22,7 +22,7 @@ class Estoque {
   // Transforma as informações da classe para plain text afim de ser armazenada no firebase
   Map<String, dynamic> toMap() {
     return {
-      'produtoId': produtoId,
+      'produto': produtoId,
       'lote': lote,
       'qtd': qtd,
       'dataVal': Timestamp.fromDate(dataVal),
@@ -35,7 +35,7 @@ class Estoque {
   // Puxar as informações plain text do firebase afim de serem utilizadas como atributos da classe em questão.
   factory Estoque.fromMap(Map<String, dynamic> map) {
     return Estoque(
-      produtoId: map['produtoId'] ?? '',
+      produtoId: map['produto'] ?? '',
       lote: map['lote'] ?? '',
       qtd: map['qtd']?.toInt() ?? 0,
       dataVal: (map['dataVal'] as Timestamp).toDate(),

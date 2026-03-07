@@ -40,7 +40,7 @@ class Produto {
   }
 
   // Puxar as informações plain text do firebase a fim de serem utilizadas como atributos da classe
-  factory Produto.fromMap(Map<String, dynamic> map) {
+  factory Produto.fromMap(Map<String, dynamic> map, String docId) {
     return Produto(
       nome: map['nome'] ?? '',
       tipo: map['tipo'] ?? '',
@@ -49,7 +49,7 @@ class Produto {
       dataEdit: (map['dataEdit'] as Timestamp).toDate(),
       userEdit: map['userEdit'] ?? '',
       descricao: map['descricao'] ?? '',
-      cod: map['cod'],
+      cod: docId,
       preco: (map['preco'] ?? 0.0).toDouble(), //puxa o preço do firebase e passa pra double
     );
   }

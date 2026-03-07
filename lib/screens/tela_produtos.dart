@@ -7,7 +7,7 @@ import '../providers/produto_provider.dart';
 import '../components/card_tabela.dart';
 import '../components/popup_produtos.dart';
 
-//codigo que ussa o card_tabela para finalizar a logica e design da tabela de produtos
+//codigo que usa o card_tabela para finalizar a logica e design da tabela de produtos
 
 
 // PROVEDOR DE PERMISSÕES (puxa o perfil de usuario direto do firebase)
@@ -42,7 +42,12 @@ class TelaProdutos extends ConsumerWidget {
     // Seta o valor da variave podeEditar a depender do perfil
     // maybeWhen para deixar bloqueado enquanto a internet não verifica o perfil
     bool podeEditar = perfilAsync.maybeWhen(
-      data: (perfilString) => !perfilString.toLowerCase().contains('leitor'),
+      data: (perfilString) {
+        final perfil = perfilString.toLowerCase();
+        // Acesso liberado somente se for administrador ou estoquista
+        return perfil.contains('administrador') || 
+               perfil.contains('estoquista');
+      },
       orElse: () => false, 
     );
 
@@ -71,6 +76,7 @@ class TelaProdutos extends ConsumerWidget {
                 produtoPreco,
               ],
               podeEditar: podeEditar, 
+              flexes: const [8, 6, 6, 6],//proporçoes de colunas atraves de teste
               onMenuTap: () {
                 showDialog(
                   context: context,
@@ -91,16 +97,18 @@ class TelaProdutos extends ConsumerWidget {
             },
             // cabeçalho especifico
             cabecalhos: const ['Nome', 'Tipo', 'Marca', 'Preço'],
+            flexColunas : const [7, 6, 6, 6],
             linhas: minhasLinhas,
           );
         },
         loading: () {
           return const CardTabela(
             titulo: 'Lista de Produtos',
-            podeEditar: false, // deixa semn permisão enquato carrega por segurança
+            podeEditar: false, // deixa sem permisão enquato carrega por segurança
             acaoBotao: null,
             cabecalhos: ['Nome', 'Tipo', 'Marca', 'Preço'],
             linhas: [],
+            flexColunas: [7, 6, 6, 6],
             isLoading: true,
           );
         },

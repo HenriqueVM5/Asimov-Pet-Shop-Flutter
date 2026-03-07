@@ -11,6 +11,7 @@ class CardTabela extends StatefulWidget {
   final List<Widget> linhas; 
   final bool isLoading; 
   final bool podeEditar; 
+  final List<int> flexColunas;// variavel para controlar tamanho das colunas
 
   const CardTabela({
     super.key,
@@ -20,6 +21,7 @@ class CardTabela extends StatefulWidget {
     required this.linhas,
     this.isLoading = false,
     this.podeEditar = true, 
+    this.flexColunas = const [1, 1, 1, 1],//por padrão divide igualmente
   });
 
   // Criação linhas brancas
@@ -27,6 +29,7 @@ class CardTabela extends StatefulWidget {
     required List<String> valores, 
     required VoidCallback onMenuTap,
     bool podeEditar = true, 
+    List<int> flexes = const [1, 1, 1, 1], // Recebe as proporçoes das colunas
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -38,10 +41,10 @@ class CardTabela extends StatefulWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center, 
         children: [
-          Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[0], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
-          Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[1], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
-          Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[2], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
-          Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[3], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
+          Expanded(flex: flexes[0], child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[0], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
+          Expanded(flex: flexes[1], child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[1], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))), 
+          Expanded(flex: flexes[2], child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[2], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
+          Expanded(flex: flexes[3], child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(valores[3], style: _estiloLinha(), maxLines: 2, overflow: TextOverflow.ellipsis))),
           //verificação se o usuario pode ou não editar
           if (podeEditar)
             GestureDetector(
@@ -127,10 +130,10 @@ class _CardTabelaState extends State<CardTabela> {
             decoration: BoxDecoration(color: const Color(0xff6097b2), borderRadius: BorderRadius.circular(10)),
             child: Row(
               children: [
-                Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[0], style: _estiloCabecalho()))),
-                Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[1], style: _estiloCabecalho()))),
-                Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[2], style: _estiloCabecalho()))),
-                Expanded(child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[3], style: _estiloCabecalho()))),
+                Expanded(flex: widget.flexColunas[0], child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[0], style: _estiloCabecalho(), maxLines: 1, overflow: TextOverflow.ellipsis))),
+                Expanded(flex: widget.flexColunas[1], child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[1], style: _estiloCabecalho(), maxLines: 1, overflow: TextOverflow.ellipsis))),
+                Expanded(flex: widget.flexColunas[2], child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[2], style: _estiloCabecalho(), maxLines: 1, overflow: TextOverflow.ellipsis))),
+                Expanded(flex: widget.flexColunas[3], child: Padding(padding: const EdgeInsets.only(right: 6.0), child: Text(widget.cabecalhos[3], style: _estiloCabecalho(), maxLines: 1, overflow: TextOverflow.ellipsis))),
                 const Icon(Icons.pets, size: 18, color: Colors.black), 
               ],
             ),
@@ -210,6 +213,6 @@ class _CardTabelaState extends State<CardTabela> {
   }
   //Estilização dos textos do cabeçalho
   TextStyle _estiloCabecalho() {
-    return GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w800, fontSize: 12);
+    return GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.w800, fontSize: 11);
   }
 }
