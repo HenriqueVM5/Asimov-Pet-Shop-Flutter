@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Produto {
+  final String? id;
   final String nome;
   final String tipo;
   final String marca;
@@ -12,6 +13,7 @@ class Produto {
   final double? preco; 
 
   Produto({
+    this.id,
     required this.nome,
     required this.tipo,
     required this.marca,
@@ -49,8 +51,9 @@ class Produto {
       dataEdit: (map['dataEdit'] as Timestamp).toDate(),
       userEdit: map['userEdit'] ?? '',
       descricao: map['descricao'] ?? '',
-      cod: docId,
+      cod: map['cod'] ?? '',
       preco: (map['preco'] ?? 0.0).toDouble(), //puxa o preço do firebase e passa pra double
+      id: docId,
     );
   }
 }

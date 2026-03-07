@@ -15,7 +15,7 @@ final estoqueProvider = StreamProvider<List<Estoque>>((ref) {
     // Transforma os dados do Firebase em uma Lista de estoque atravez da funçao Estoque.fromMap criada no model Estoque
     return snapshot.docs.map((doc) {
       final data = doc.data();
-      return Estoque.fromMap(data);
+      return Estoque.fromMap(data, doc.id);
     }).toList();
   });
 });

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-//codigo que define o background em comom das telas de home/perfil/produtos/estoqeue e dos fomulario de novo item
+// Código que define o background em comum das telas de home/perfil/produtos/estoque e dos formularios
 
 class FundoPadrao extends StatelessWidget {
   final Widget child;
@@ -17,12 +17,12 @@ class FundoPadrao extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, 
+      resizeToAvoidBottomInset: false, 
+      
       backgroundColor: Colors.transparent, 
       extendBody: true, 
       bottomNavigationBar: bottomNavigationBar, 
       
-      //definição das cores de fundo
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -36,19 +36,17 @@ class FundoPadrao extends StatelessWidget {
           ),
         ),
         
-        
         child: SafeArea(
-          bottom: false, // Deixa um espaço ente o fundo criado e a tela, para que quando a tab for adicionada não esteja colada
+          bottom: false, 
           child: Center(
             child: FittedBox(
               fit: BoxFit.contain,
               child: SizedBox(
-                width: 375, // tamnho padrão do figma
-                height: 812, // tamanho padrão do figma
+                width: 375, // Tamanho padrão do Figma
+                height: 812, // Tamanho padrão do Figma
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    
                     
                     // Onda azul no topo
                     Positioned(
@@ -62,7 +60,7 @@ class FundoPadrao extends StatelessWidget {
                       ),
                     ),
 
-                    // Brinquedos do roda pé
+                    // Brinquedos do rodapé
                     Positioned(
                       bottom: 80,
                       left: -50,
@@ -85,11 +83,19 @@ class FundoPadrao extends StatelessWidget {
                       ),
                     ),
 
-                    //decorações especificas de cada tela adicionadas posteriormente
+                    // Decorações 
                     ...decoracoes,
 
-                    //child para colocar o conteudo da pagina
-                    child, 
+                    //soluçao para o teclado
+                    Positioned.fill(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          // levanta o conteúdo apenas quando o teclado aparece
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        child: child, 
+                      ),
+                    ),
                     
                   ],
                 ),

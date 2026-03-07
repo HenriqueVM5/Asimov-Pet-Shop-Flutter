@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart'; 
-import 'package:cloud_firestore/cloud_firestore.dart'; 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pet_shop_app/screens/tela_novo_produto.dart'; 
 import '../providers/produto_provider.dart';
 import '../components/card_tabela.dart';
 import '../components/popup_produtos.dart';
@@ -56,7 +57,7 @@ class TelaProdutos extends ConsumerWidget {
         top: 35.0,
         left: 24.0,
         right: 24.0,
-        bottom: 80.0,
+        bottom: 120.0,
       ),
       child: produtosAsync.when(
         data: (listaProdutos) {
@@ -92,8 +93,10 @@ class TelaProdutos extends ConsumerWidget {
             titulo: 'Lista de Produtos',
             podeEditar: podeEditar, 
             acaoBotao: () {
-              // Todo: abrir forms de add produto
-              print("Botão de adicionar clicado!");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const TelaNovoProduto()),
+              );
             },
             // cabeçalho especifico
             cabecalhos: const ['Nome', 'Tipo', 'Marca', 'Preço'],
