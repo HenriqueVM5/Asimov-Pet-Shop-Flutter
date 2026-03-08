@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/produto_provider.dart';
 import '../providers/estoque_provider.dart';
 import '../providers/baixa_provider.dart';
+import '../models/produto_item.dart';
 
 class TelaHome extends ConsumerWidget {
   const TelaHome({super.key});
@@ -74,38 +75,119 @@ class TelaHome extends ConsumerWidget {
           ),
           const SizedBox(height: 40), // Espaço maior entre cards e lista
           // 2. LISTA DE REGISTROS RECENTES
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+          produtosAsync.when(
+            data: (produtos) {
+              // Ordena produtos por data de cadastro (mais recentes primeiro)
+              final produtosOrdenados = List<Produto>.from(produtos)
+                ..sort((a, b) => b.dataCad.compareTo(a.dataCad));
+
+              // Pega apenas os últimos 5 produtos
+              final produtosRecentes = produtosOrdenados.take(5).toList();
+
+              return Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Registros Recentes',
-                  style: GoogleFonts.poppins(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Registros Recentes',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ...produtosRecentes
+                        .map(
+                          (produto) => _buildItemRegistro(
+                            '${produto.nome} - ${produto.marca}',
+                          ),
+                        )
+                        .toList(),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                _buildItemRegistro('Registro recente'),
-                _buildItemRegistro('Registro recente'),
-                _buildItemRegistro('Registro recente'),
-                _buildItemRegistro('Registro recente'),
-                _buildItemRegistro('Registro recente'),
-              ],
-            ),
+              );
+            },
+            loading: () {
+              return Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Registros Recentes',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Center(child: CircularProgressIndicator()),
+                  ],
+                ),
+              );
+            },
+            error: (error, stackTrace) {
+              return Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Registros Recentes',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Erro ao carregar registros',
+                      style: GoogleFonts.poppins(
+                        color: Colors.red,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -175,14 +257,19 @@ class TelaHome extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            texto,
-            style: GoogleFonts.poppins(
-              color: Colors.black,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
+          Expanded(
+            child: Text(
+              texto,
+              style: GoogleFonts.poppins(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
           ),
+          const SizedBox(width: 8),
           const Icon(Icons.chevron_right, color: Colors.black54, size: 20),
         ],
       ),

@@ -5,12 +5,14 @@ class Baixa {
   final int qtd;
   final DateTime data;
   final String user; // E-mail do funcionário que deu a baixa
+  final String motivo; 
 
   Baixa({
     required this.itemEstId,
     required this.qtd,
     required this.data,
     required this.user,
+    required this.motivo,
   });
 
   // Transforma as informações da classe para plain text afim de ser armazenada no firebase
@@ -20,6 +22,7 @@ class Baixa {
       'qtd': qtd,
       'data': Timestamp.fromDate(data),
       'user': user,
+      'motivo': motivo,
     };
   }
 
@@ -30,6 +33,7 @@ class Baixa {
       qtd: map['qtd']?.toInt() ?? 0,
       data: (map['data'] as Timestamp).toDate(),
       user: map['user'] ?? '',
+      motivo: map['motivo'] ?? '',
     );
   }
 }

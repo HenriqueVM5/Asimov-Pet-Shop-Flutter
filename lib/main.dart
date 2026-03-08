@@ -6,8 +6,7 @@ import 'package:pet_shop_app/screens/pag_inicial_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_shop_app/screens/tela_principal.dart';
 
-import 'package:pet_shop_app/screens/login_screen.dart';
-import 'package:pet_shop_app/widgets/recuperar_senha.dart';
+
 import 'package:provider/provider.dart';
 import 'package:pet_shop_app/providers/auth_provider.dart' as app_auth;
 

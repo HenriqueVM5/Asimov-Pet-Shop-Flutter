@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Estoque {
+  final String? id;
   final String produtoId; // Referência ao ID do Produto no Firebase
   final String lote;
   final int qtd;
@@ -10,6 +11,7 @@ class Estoque {
   final String userEdit; // E-mail do funcionário que editou
 
   Estoque({
+    this.id,
     required this.produtoId,
     required this.lote,
     required this.qtd,
@@ -22,7 +24,7 @@ class Estoque {
   // Transforma as informações da classe para plain text afim de ser armazenada no firebase
   Map<String, dynamic> toMap() {
     return {
-      'produtoId': produtoId,
+      'produto': produtoId,
       'lote': lote,
       'qtd': qtd,
       'dataVal': Timestamp.fromDate(dataVal),
@@ -33,9 +35,10 @@ class Estoque {
   }
 
   // Puxar as informações plain text do firebase afim de serem utilizadas como atributos da classe em questão.
-  factory Estoque.fromMap(Map<String, dynamic> map) {
+  factory Estoque.fromMap(Map<String, dynamic> map, String docId) {
     return Estoque(
-      produtoId: map['produtoId'] ?? '',
+      id: docId,
+      produtoId: map['produto'] ?? '',
       lote: map['lote'] ?? '',
       qtd: map['qtd']?.toInt() ?? 0,
       dataVal: (map['dataVal'] as Timestamp).toDate(),

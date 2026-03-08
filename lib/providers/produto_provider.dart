@@ -15,7 +15,7 @@ final produtosProvider = StreamProvider<List<Produto>>((ref) {
     // Transforma os dados do Firebase em uma Lista de Produtos atravez da funçao Produto.fromMap criada no model produtos
     return snapshot.docs.map((doc) {
       final data = doc.data();
-      return Produto.fromMap(data);
+      return Produto.fromMap(data, doc.id);
     }).toList();
   });
 });

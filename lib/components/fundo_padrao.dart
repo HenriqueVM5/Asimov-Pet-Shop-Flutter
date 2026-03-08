@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-//codigo que define o background em comom das telas de home/perfil/produtos/estoqeue e dos fomulario de novo item
+// Código que define o background em comum das telas de home/perfil/produtos/estoque e dos formularios
 
 class FundoPadrao extends StatelessWidget {
   final Widget child;
@@ -19,10 +19,12 @@ class FundoPadrao extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
+
       backgroundColor: Colors.transparent,
       extendBody: true,
       bottomNavigationBar: bottomNavigationBar,
+
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -35,14 +37,15 @@ class FundoPadrao extends StatelessWidget {
             stops: [0.0, 0.75],
           ),
         ),
+
         child: SafeArea(
           bottom: false,
           child: Center(
             child: FittedBox(
               fit: BoxFit.contain,
               child: SizedBox(
-                width: screenWidth,
-                height: screenHeight,
+                width: 375, // Tamanho padrão do Figma
+                height: 812, // Tamanho padrão do Figma
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
@@ -57,7 +60,8 @@ class FundoPadrao extends StatelessWidget {
                         fit: BoxFit.contain,
                       ),
                     ),
-                    // Brinquedos do roda pé
+
+                    // Brinquedos do rodapé
                     Positioned(
                       bottom: 80,
                       left: -50,
@@ -78,10 +82,20 @@ class FundoPadrao extends StatelessWidget {
                         width: 120,
                       ),
                     ),
-                    //decorações especificas de cada tela adicionadas posteriormente
+
+                    // Decorações
                     ...decoracoes,
-                    //child para colocar o conteudo da pagina
-                    child,
+
+                    //soluçao para o teclado
+                    Positioned.fill(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          // levanta o conteúdo apenas quando o teclado aparece
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        child: child,
+                      ),
+                    ),
                   ],
                 ),
               ),
