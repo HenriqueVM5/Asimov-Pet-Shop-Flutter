@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/produto_provider.dart';
 import '../providers/estoque_provider.dart';
-import '../providers/baixa_provider.dart';
 import '../models/produto_item.dart';
 
 class TelaHome extends ConsumerWidget {
@@ -15,11 +14,9 @@ class TelaHome extends ConsumerWidget {
 
     final produtosAsync = ref.watch(produtosProvider);
     final estoqueAsync = ref.watch(estoqueProvider);
-    final baixasAsync = ref.watch(baixaProvider);
 
     String produtosValor = '-';
     String estoqueValor = '-';
-    String baixasValor = '-';
 
     produtosAsync.when(
       data: (produtos) => produtosValor = produtos.length.toString(),
@@ -30,11 +27,6 @@ class TelaHome extends ConsumerWidget {
       data: (estoque) => estoqueValor = estoque.length.toString(),
       loading: () => estoqueValor = '...',
       error: (_, __) => estoqueValor = 'Erro',
-    );
-    baixasAsync.when(
-      data: (baixas) => baixasValor = baixas.length.toString(),
-      loading: () => baixasValor = '...',
-      error: (_, __) => baixasValor = 'Erro',
     );
 
     return SingleChildScrollView(
@@ -61,14 +53,6 @@ class TelaHome extends ConsumerWidget {
                   titulo: 'Estoque Total',
                   valor: estoqueValor,
                   descricao: 'Quantidade atual\nde itens no estoque',
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildResumoCard(
-                  titulo: 'Baixas',
-                  valor: baixasValor,
-                  descricao: 'Quantidade de baixas\nrealizadas',
                 ),
               ),
             ],
