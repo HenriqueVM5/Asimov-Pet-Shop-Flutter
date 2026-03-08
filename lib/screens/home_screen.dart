@@ -1,0 +1,191 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/produto_provider.dart';
+import '../providers/estoque_provider.dart';
+import '../providers/baixa_provider.dart';
+
+class TelaHome extends ConsumerWidget {
+  const TelaHome({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Usamos o SingleChildScrollView para a tela poder rolar se a lista ficar grande
+
+    final produtosAsync = ref.watch(produtosProvider);
+    final estoqueAsync = ref.watch(estoqueProvider);
+    final baixasAsync = ref.watch(baixaProvider);
+
+    String produtosValor = '-';
+    String estoqueValor = '-';
+    String baixasValor = '-';
+
+    produtosAsync.when(
+      data: (produtos) => produtosValor = produtos.length.toString(),
+      loading: () => produtosValor = '...',
+      error: (_, __) => produtosValor = 'Erro',
+    );
+    estoqueAsync.when(
+      data: (estoque) => estoqueValor = estoque.length.toString(),
+      loading: () => estoqueValor = '...',
+      error: (_, __) => estoqueValor = 'Erro',
+    );
+    baixasAsync.when(
+      data: (baixas) => baixasValor = baixas.length.toString(),
+      loading: () => baixasValor = '...',
+      error: (_, __) => baixasValor = 'Erro',
+    );
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.only(left: 24, right: 24, bottom: 100),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Título principal
+          const SizedBox(height: 60), // Espaço extra entre título e cards
+          // 1. CARDS DE RESUMO (PRODUTOS E ESTOQUE)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: _buildResumoCard(
+                  titulo: 'Total de Produtos',
+                  valor: produtosValor,
+                  descricao: 'Quantidade atual\nprodutos oferecidos',
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildResumoCard(
+                  titulo: 'Estoque Total',
+                  valor: estoqueValor,
+                  descricao: 'Quantidade atual\nde itens no estoque',
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildResumoCard(
+                  titulo: 'Baixas',
+                  valor: baixasValor,
+                  descricao: 'Quantidade de baixas\nrealizadas',
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 40), // Espaço maior entre cards e lista
+          // 2. LISTA DE REGISTROS RECENTES
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Registros Recentes',
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildItemRegistro('Registro recente'),
+                _buildItemRegistro('Registro recente'),
+                _buildItemRegistro('Registro recente'),
+                _buildItemRegistro('Registro recente'),
+                _buildItemRegistro('Registro recente'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Função para criar o layout repetido dos dois cards de cima
+  Widget _buildResumoCard({
+    required String titulo,
+    required String valor,
+    required String descricao,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              titulo,
+              style: GoogleFonts.poppins(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            valor,
+            style: GoogleFonts.poppins(
+              color: Colors.black,
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            descricao,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: Colors.black87,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Função para criar as linhazinhas clicáveis da lista de recentes
+  Widget _buildItemRegistro(String texto) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            texto,
+            style: GoogleFonts.poppins(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const Icon(Icons.chevron_right, color: Colors.black54, size: 20),
+        ],
+      ),
+    );
+  }
+}
