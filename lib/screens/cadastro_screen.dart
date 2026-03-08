@@ -9,6 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart'
         AuthProvider; // Se não ele estava dando conflito com o meu auth_provider
 import 'package:provider/provider.dart';
 
+bool _senhaVisivel = false;
+bool _confirmarSenhaVisivel = false;
+
 /// Tela responsável pelo cadastro de novos usuários no sistema.
 ///
 /// Esta tela:
@@ -240,11 +243,61 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       // CAMPO: SENHA
                       TextFormField(
                         controller: _senhaController,
-                        obscureText: true,
+                        obscureText: !_senhaVisivel,
                         style: GoogleFonts.poppins(fontSize: 12),
-                        decoration: _buildInputDecoration(
-                          'Senha',
-                          Icons.lock_outline,
+                        decoration: InputDecoration(
+                          hintText: 'Senha',
+                          hintStyle: const TextStyle(
+                            color: Color(0xFF838383),
+                            fontSize: 10,
+                            fontFamily: 'Poppins',
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _senhaVisivel
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: const Color(0xFF838383),
+                              size: 18,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _senhaVisivel = !_senhaVisivel;
+                              });
+                            },
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF838383),
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF8AD8FF),
+                              width: 2,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.length < 6)
@@ -258,11 +311,62 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       // CAMPO: CONFIRMAR SENHA
                       TextFormField(
                         controller: _confirmarSenhaController,
-                        obscureText: true,
+                        obscureText: !_confirmarSenhaVisivel,
                         style: GoogleFonts.poppins(fontSize: 12),
-                        decoration: _buildInputDecoration(
-                          'Confirme sua senha',
-                          Icons.lock_outlined,
+                        decoration: InputDecoration(
+                          hintText: 'Confirme sua senha',
+                          hintStyle: const TextStyle(
+                            color: Color(0xFF838383),
+                            fontSize: 10,
+                            fontFamily: 'Poppins',
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _confirmarSenhaVisivel
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: const Color(0xFF838383),
+                              size: 18,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _confirmarSenhaVisivel =
+                                    !_confirmarSenhaVisivel;
+                              });
+                            },
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF838383),
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF8AD8FF),
+                              width: 2,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty)
@@ -279,7 +383,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
+                          },
                           child: Text.rich(
                             textAlign: TextAlign.center,
                             TextSpan(

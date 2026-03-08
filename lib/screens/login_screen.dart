@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/recuperar_senha.dart';
 
+bool _senhaVisivel = false;
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -48,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const TelaPrincipal()),
-            (route) => false, 
+            (route) => false,
           );
         }
       } else {
@@ -206,11 +208,64 @@ class _LoginScreenState extends State<LoginScreen> {
                             // Campo de Senha
                             TextFormField(
                               controller: _senhaController,
-                              obscureText: true,
+                              obscureText: !_senhaVisivel,
                               style: const TextStyle(color: Color(0xFF365665)),
-                              decoration: _estiloCampo(
-                                'Senha',
-                                Icons.visibility_outlined,
+                              decoration: InputDecoration(
+                                hintText: 'Senha',
+                                hintStyle: const TextStyle(
+                                  color: Color(0xFF6097B2),
+                                  fontSize: 14,
+                                  fontFamily: 'Poppins',
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _senhaVisivel
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: const Color(0xFF365665),
+                                    size: 22,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _senhaVisivel = !_senhaVisivel;
+                                    });
+                                  },
+                                ),
+                                helperText: ' ',
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 16,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFF365665),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                  borderSide: const BorderSide(
+                                    color: Color(0xFF365665),
+                                    width: 2.5,
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                  borderSide: const BorderSide(
+                                    color: Colors.redAccent,
+                                    width: 2,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                  borderSide: const BorderSide(
+                                    color: Colors.redAccent,
+                                    width: 2.5,
+                                  ),
+                                ),
                               ),
                               validator: (value) =>
                                   value!.isEmpty ? 'Obrigatório' : null,
