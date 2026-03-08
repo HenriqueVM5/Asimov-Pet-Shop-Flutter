@@ -4,6 +4,7 @@ import 'package:pet_shop_app/screens/tela_principal.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/recuperar_senha.dart';
+import 'package:pet_shop_app/screens/cadastro_screen.dart';
 
 bool _senhaVisivel = false;
 
@@ -357,7 +358,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: OutlinedButton(
-                                    onPressed: () => print("Ir para Cadastro"),
+                                    onPressed: () {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const CadastroScreen(),
+                                        ),
+                                      );
+                                    },
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                         vertical: 12,
