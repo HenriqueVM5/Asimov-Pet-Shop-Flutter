@@ -7,6 +7,34 @@ import 'package:google_sign_in/google_sign_in.dart' as googleAuth;
 class AuthProvider extends ChangeNotifier {
   bool isLoading = false;
 
+  /// Atualiza o nome do usuário logado no Firestore e FirebaseAuth
+  Future<String?> updateNomeUsuario(String novoNome) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        isLoading = false;
+        notifyListeners();
+        return 'Usuário não está logado.';
+      }
+      // Atualiza displayName no FirebaseAuth
+      await user.updateDisplayName(novoNome);
+      // Atualiza nome no Firestore
+      await FirebaseFirestore.instance
+          .collection('funcionarios')
+          .doc(user.email)
+          .update({'nome': novoNome});
+      isLoading = false;
+      notifyListeners();
+      return null;
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+      return 'Erro ao atualizar nome: $e';
+    }
+  }
+
   // Função que retorna uma string (se deu errado) ou null (se deu certo)
   Future<String?> cadastrarUsuario(Funcionario funcionario) async {
     try {
