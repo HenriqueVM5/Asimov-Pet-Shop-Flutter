@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../providers/auth_provider.dart';
 
 class TelaPerfil extends StatefulWidget {
   const TelaPerfil({super.key});
@@ -16,11 +17,13 @@ class _TelaPerfilState extends State<TelaPerfil> {
   final _emailController = TextEditingController();
   final _cargoController = TextEditingController();
 
+  AuthProvider? _authProvider;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _authProvider = AuthProvider();
     _loadUserProfile();
   }
 
@@ -29,8 +32,8 @@ class _TelaPerfilState extends State<TelaPerfil> {
       _isLoading = true;
     });
     try {
-      // Obter usuário logado
       final user = FirebaseAuth.instance.currentUser;
+      // Obter usuário logado
       if (user != null) {
         _emailController.text = user.email ?? '';
         // Buscar dados do Firestore
@@ -48,7 +51,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
         }
       }
     } catch (e) {
-      // Em caso de erro, pode mostrar um snackbar ou log
+      print("Erro ao carregar perfil: $e");
     }
     setState(() {
       _isLoading = false;
@@ -137,9 +140,55 @@ class _TelaPerfilState extends State<TelaPerfil> {
                 SizedBox(
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
-                      print("Salvando alterações do perfil...");
-                      // TODO: Chamar Provider para salvar no Firestore
+                    onPressed: () async {
+                      // 1. Pega o valor digitado e remove espaços em branco nas pontas
+                      final novoNome = _nomeController.text.trim();
+
+                      // 2. Validação básica: não permite salvar se o nome estiver vazio
+                      if (novoNome.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('O nome não pode ficar vazio.'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
+
+                      // 3. Mostra o loading na tela
+                      setState(() {
+                        _isLoading = true;
+                      });
+
+                      // 4. Chama o provider para atualizar no Firebase
+                      final erro = await _authProvider?.updateNomeUsuario(
+                        novoNome,
+                      );
+
+                      // 5. Tira o loading da tela
+                      setState(() {
+                        _isLoading = false;
+                      });
+
+                      // 6. Mostra o resultado para o usuário
+                      if (!mounted)
+                        return; // Garante que a tela ainda está aberta antes de mostrar o aviso
+
+                      if (erro == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Perfil atualizado com sucesso!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(erro),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF8AD8FF),
@@ -172,7 +221,6 @@ class _TelaPerfilState extends State<TelaPerfil> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Texto da Label (Ex: Nome, Email)
         Padding(
           padding: const EdgeInsets.only(left: 8, bottom: 8),
           child: Text(
