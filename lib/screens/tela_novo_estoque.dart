@@ -62,6 +62,7 @@ class _TelaNovoEstoqueState extends ConsumerState<TelaNovoEstoque> {
   }
 
   Future<void> _salvarEstoque() async {
+    FocusScope.of(context).unfocus();
     setState(() => _tentouSalvar = true);
 
     if (_produtoSelecionadoId == null ||
@@ -343,18 +344,44 @@ class _TelaNovoEstoqueState extends ConsumerState<TelaNovoEstoque> {
     );
   }
 
-  InputDecoration _inputDecorationEstilo(String label, bool erro) {
+  
+  //estilo das caixas 
+  InputDecoration _inputDecorationEstilo(
+    String label,
+    bool erro, {
+    String? erroMsg,
+  }) {
     return InputDecoration(
-      labelText: label,
-      labelStyle: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
-      filled: true,
-      fillColor: Colors.white,
-      errorText: erro ? "Obrigatório" : null,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide.none,
+      labelText: erro ? "$label (${erroMsg ?? 'Obrigatório'})" : label,
+      labelStyle: GoogleFonts.poppins(
+        fontSize: 12,
+        color: erro ? Colors.red : Colors.grey[600],
+        fontWeight: erro ? FontWeight.bold : FontWeight.normal,
       ),
+
+      errorText: null,
+
+      filled: true,
+      
+      fillColor: Colors.white,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: erro ? Colors.red : Colors.grey),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: erro ? Colors.red : Colors.grey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: erro ? Colors.red : const Color(0xff365665),
+          width: 2,
+        ),
+      ),
+
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     );
   }
 }
+

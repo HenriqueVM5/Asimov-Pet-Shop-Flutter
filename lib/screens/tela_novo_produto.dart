@@ -49,8 +49,9 @@ class _TelaNovoProdutoState extends State<TelaNovoProduto> {
   }
 
 
-  // FUNÇÃO: SALVAR NOVO PRODUTO NO FIREBASE
+  // Salvar no firebase
   Future<void> _salvarProduto() async {
+    FocusScope.of(context).unfocus();//fecha o teclado se ainda aberto
     setState(() {
       _tentouSalvar = true;
     });
@@ -140,7 +141,7 @@ class _TelaNovoProdutoState extends State<TelaNovoProduto> {
   }
 
 
-  // CONSTRUÇÃO DA TELA
+  // Tela
   @override
   Widget build(BuildContext context) {
 
@@ -291,7 +292,7 @@ class _TelaNovoProdutoState extends State<TelaNovoProduto> {
     );
   }
 
- 
+ //widget de campo de texto
   Widget _construirCampoTexto(String label, TextEditingController controller, {bool isNumber = false, int maxLines = 1}) {
     bool temErro = _tentouSalvar && controller.text.trim().isEmpty;
 
@@ -313,28 +314,32 @@ class _TelaNovoProdutoState extends State<TelaNovoProduto> {
           maxLines: maxLines,
           style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
           decoration: InputDecoration(
-            labelText: label,
-            labelStyle: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
             
-            errorText: temErro ? 'Obrigatório' : null,
-            errorStyle: GoogleFonts.poppins(fontSize: 10, color: Colors.red),
+            labelText: temErro ? "$label (Obrigatório)" : label,
+            labelStyle: GoogleFonts.poppins(
+              fontSize: 12, 
+              color: temErro ? Colors.red : Colors.grey[600],
+              fontWeight: temErro ? FontWeight.bold : FontWeight.normal,
+            ),
             
-
+            errorText: null, 
+            
             filled: true,
             fillColor: Colors.white,
 
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: temErro ? Colors.red : Colors.grey),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: temErro ? Colors.red : Colors.grey),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: Color(0xff365665), width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: temErro ? Colors.red : const Color(0xff365665), width: 2),
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: Colors.red, width: 1),
-            ),
+            
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           ),
         ),
