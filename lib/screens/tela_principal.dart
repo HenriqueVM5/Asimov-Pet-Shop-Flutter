@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pet_shop_app/screens/home_screen.dart';
+import 'package:pet_shop_app/screens/profile_screen.dart';
 import 'package:pet_shop_app/screens/tela_estoque.dart';
 import 'package:pet_shop_app/screens/tela_produtos.dart';
 import 'package:pet_shop_app/components/fundo_telas.dart';
@@ -18,20 +20,10 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
 
   // Lista de qual tela deve ser sobrescrita sobre o fundo em cada aba da tabs
   final List<Widget> _telas = [
-    const Center(
-      child: Text(
-        'Conteúdo da home',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    ), //tela de home
-    const Center(
-      child: Text(
-        'Conteúdo de perfil',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    ), //tela de perfil
+    const TelaHome(), //tela de home
+    const TelaPerfil(), //tela de perfil
     const TelaProdutos(), //tela de produtos
-    const TelaEstoque() //tela de estoque
+    const TelaEstoque(), //tela de estoque
   ];
 
   //Lista do titulo de cada uma das telas
