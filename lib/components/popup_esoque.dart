@@ -297,6 +297,9 @@ class _PopupEstoqueState extends ConsumerState<PopupEstoque> {
   Widget build(BuildContext context) {
     final produtosAsync = ref.watch(produtosProvider);
     final listaProdutos = produtosAsync.value ?? [];
+    final produtosParaDropdown = listaProdutos.where((p) {
+      return p.ativo || p.id == widget.itemEstoque.produtoId;
+    }).toList();
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -328,7 +331,7 @@ class _PopupEstoqueState extends ConsumerState<PopupEstoque> {
               const SizedBox(height: 16),
 
 
-              _construirDropdownProduto(listaProdutos),
+              _construirDropdownProduto(produtosParaDropdown),
               _construirCampoTexto("Lote", _loteController),
               
 

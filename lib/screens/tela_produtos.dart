@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pet_shop_app/screens/tela_novo_produto.dart'; 
+import 'package:pet_shop_app/screens/tela_novo_produto.dart';
 import '../providers/produto_provider.dart';
 import '../components/card_tabela.dart';
 import '../components/popup_produtos.dart';
 
 //codigo que usa o card_tabela para finalizar a logica e design da tabela de produtos
 
-
 // PROVEDOR DE PERMISSÕES (puxa o perfil de usuario direto do firebase)
 final perfilUsuarioProvider = StreamProvider<String>((ref) {
   final user = FirebaseAuth.instance.currentUser;
-  
+
   // Se por algum motivo não houver utilizador logado, bloqueia por segurança(deixando o perfil como leitor por padrão)
-  if (user == null || user.email == null) return Stream.value('leitor'); 
+  if (user == null || user.email == null) return Stream.value('leitor');
 
   // se não retorna ao vivo oq esta setado no firebase
   return FirebaseFirestore.instance
@@ -25,7 +24,7 @@ final perfilUsuarioProvider = StreamProvider<String>((ref) {
       .snapshots()
       .map((snapshot) {
         if (snapshot.exists) {
-          return snapshot.data()?['perfil'].toString() ?? 'leitor'; 
+          return snapshot.data()?['perfil'].toString() ?? 'leitor';
         }
         return 'leitor';
       });
@@ -37,8 +36,9 @@ class TelaProdutos extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final produtosAsync = ref.watch(produtosProvider);
-    final perfilAsync = ref.watch(perfilUsuarioProvider); // provider de perfil do firebase
-
+    final perfilAsync = ref.watch(
+      perfilUsuarioProvider,
+    ); // provider de perfil do firebase
 
     // Seta o valor da variave podeEditar a depender do perfil
     // maybeWhen para deixar bloqueado enquanto a internet não verifica o perfil
@@ -46,10 +46,10 @@ class TelaProdutos extends ConsumerWidget {
       data: (perfilString) {
         final perfil = perfilString.toLowerCase();
         // Acesso liberado somente se for administrador ou estoquista
-        return perfil.contains('administrador') || 
-               perfil.contains('estoquista');
+        return perfil.contains('administrador') ||
+            perfil.contains('estoquista');
       },
-      orElse: () => false, 
+      orElse: () => false,
     );
 
     return Padding(
@@ -60,7 +60,9 @@ class TelaProdutos extends ConsumerWidget {
         bottom: 120.0,
       ),
       child: produtosAsync.when(
-        data: (listaProdutos) {
+        data: (listaCompleta) {
+          // lista filtadra apenas com produtos ativos
+          final listaProdutos = listaCompleta.where((p) => p.ativo).toList();
           List<Widget> minhasLinhas = listaProdutos.map((produto) {
             // Regra de formatação do preço vindo do firebase pra moeda brasileira
             final formatadorMoeda = NumberFormat.currency(
@@ -76,13 +78,18 @@ class TelaProdutos extends ConsumerWidget {
                 produto.marca,
                 produtoPreco,
               ],
-              podeEditar: podeEditar, 
-              flexes: const [8, 6, 6, 6],//proporçoes de colunas atraves de teste
+              podeEditar: podeEditar,
+              flexes: const [
+                8,
+                6,
+                6,
+                6,
+              ], //proporçoes de colunas atraves de teste
               onMenuTap: () {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return PopupProdutos(produto: produto); 
+                    return PopupProdutos(produto: produto);
                   },
                 );
               },
@@ -91,23 +98,26 @@ class TelaProdutos extends ConsumerWidget {
 
           return CardTabela(
             titulo: 'Lista de Produtos',
-            podeEditar: podeEditar, 
+            podeEditar: podeEditar,
             acaoBotao: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const TelaNovoProduto()),
+                MaterialPageRoute(
+                  builder: (context) => const TelaNovoProduto(),
+                ),
               );
             },
             // cabeçalho especifico
             cabecalhos: const ['Nome', 'Tipo', 'Marca', 'Preço'],
-            flexColunas : const [7, 6, 6, 6],
+            flexColunas: const [7, 6, 6, 6],
             linhas: minhasLinhas,
           );
         },
         loading: () {
           return const CardTabela(
             titulo: 'Lista de Produtos',
-            podeEditar: false, // deixa sem permisão enquato carrega por segurança
+            podeEditar:
+                false, // deixa sem permisão enquato carrega por segurança
             acaoBotao: null,
             cabecalhos: ['Nome', 'Tipo', 'Marca', 'Preço'],
             linhas: [],

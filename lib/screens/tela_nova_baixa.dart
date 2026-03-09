@@ -59,7 +59,7 @@ class _TelaNovaBaixaState extends ConsumerState<TelaNovaBaixa> {
   }
 
   // Salvar e att o estoque
-  Future<void> _salvarBaixa(Estoque? estoqueSelecionado) async {
+  Future<void> _salvarBaixa(Estoque? estoqueSelecionado, String nomeProduto) async {
     FocusScope.of(context).unfocus(); // Fecha o teclado
 
     setState(() {
@@ -87,6 +87,8 @@ class _TelaNovaBaixaState extends ConsumerState<TelaNovaBaixa> {
       await FirebaseFirestore.instance.collection('baixas').add({
         'itemEstId': estoqueSelecionado.id,
         'qtd': qtdBaixa,
+        'lote': estoqueSelecionado.lote,
+        'nomeProduto': nomeProduto,
         'data': Timestamp.fromDate(dataAtual),
         'user': usuarioAtual,
         'motivo': _motivoController.text.trim(),
@@ -174,11 +176,15 @@ class _TelaNovaBaixaState extends ConsumerState<TelaNovaBaixa> {
 
     // procura o objeto estoque selecionado
     Estoque? estoqueSelecionado;
+    String nomeProdutoSelecionado = "Produto Desconhecido";
     if (_estoqueSelecionadoId != null) {
       try {
         estoqueSelecionado = listaEstoque.firstWhere(
           (e) => e.id == _estoqueSelecionadoId,
         );
+        nomeProdutoSelecionado = listaProdutos.firstWhere(
+          (p) => p.id == estoqueSelecionado!.produtoId
+        ).nome;
       } catch (_) {
         _estoqueSelecionadoId = null;
       }
@@ -288,7 +294,7 @@ class _TelaNovaBaixaState extends ConsumerState<TelaNovaBaixa> {
                       child: ElevatedButton(
                         onPressed: _isSaving
                             ? null
-                            : () => _salvarBaixa(estoqueSelecionado),
+                            : () => _salvarBaixa(estoqueSelecionado, nomeProdutoSelecionado),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff8ad8ff),
                           elevation: 0,
@@ -346,9 +352,14 @@ class _TelaNovaBaixaState extends ConsumerState<TelaNovaBaixa> {
                     .nome;
               } catch (_) {}
 
-              return Text(
-                "${estoque.lote} ($nomeProd)",
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+
+              return SizedBox(
+                width: MediaQuery.of(context).size.width - 120, 
+                child: Text(
+                  "${estoque.lote} ($nomeProd)",
+                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+                  overflow: TextOverflow.ellipsis, 
+                ),
               );
             }).toList();
           },

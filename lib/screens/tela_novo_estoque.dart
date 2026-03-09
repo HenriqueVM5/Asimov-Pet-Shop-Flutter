@@ -100,7 +100,11 @@ class _TelaNovoEstoqueState extends ConsumerState<TelaNovoEstoque> {
                 const SizedBox(width: 8),
                 Text(
                   'Lote cadastrado com sucesso!',
-                  style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
@@ -226,7 +230,7 @@ class _TelaNovoEstoqueState extends ConsumerState<TelaNovoEstoque> {
                     // lote
                     _construirCampoTexto("Lote", _loteController),
 
-                    // data validade 
+                    // data validade
                     _construirCampoData(),
 
                     // qtd
@@ -274,22 +278,28 @@ class _TelaNovoEstoqueState extends ConsumerState<TelaNovoEstoque> {
     );
   }
 
-  // Widget do Dropdown 
+  // Widget do Dropdown
   Widget _construirDropdown(List<Produto> produtos) {
     bool erro = _tentouSalvar && _produtoSelecionadoId == null;
+
+    // filtro para aparecer somente produtos ativos
+    final produtosAtivos = produtos.where((p) => p.ativo).toList();
+
     return Container(
       decoration: _boxDecorationEstilo(),
       child: DropdownButtonFormField<String>(
         value: _produtoSelecionadoId,
         dropdownColor: const Color(0xFFE3F2FD),
-        items: produtos
+        items: produtosAtivos
             .map((p) => DropdownMenuItem(value: p.id, child: Text(p.nome)))
             .toList(),
+
         onChanged: (val) => setState(() => _produtoSelecionadoId = val),
         decoration: _inputDecorationEstilo("Selecionar Produto", erro),
       ),
     );
   }
+
   //widget de data
   Widget _construirCampoData() {
     bool erro = _tentouSalvar && _dataValidadeSelecionada == null;
@@ -312,6 +322,7 @@ class _TelaNovoEstoqueState extends ConsumerState<TelaNovoEstoque> {
       ),
     );
   }
+
   //widget de texto
   Widget _construirCampoTexto(
     String label,
@@ -344,8 +355,7 @@ class _TelaNovoEstoqueState extends ConsumerState<TelaNovoEstoque> {
     );
   }
 
-  
-  //estilo das caixas 
+  //estilo das caixas
   InputDecoration _inputDecorationEstilo(
     String label,
     bool erro, {
@@ -362,7 +372,7 @@ class _TelaNovoEstoqueState extends ConsumerState<TelaNovoEstoque> {
       errorText: null,
 
       filled: true,
-      
+
       fillColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -384,4 +394,3 @@ class _TelaNovoEstoqueState extends ConsumerState<TelaNovoEstoque> {
     );
   }
 }
-

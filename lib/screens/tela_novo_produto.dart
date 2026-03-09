@@ -91,6 +91,7 @@ class _TelaNovoProdutoState extends State<TelaNovoProduto> {
         'dataCad': Timestamp.fromDate(dataAtual),
         'dataEdit': Timestamp.fromDate(dataAtual),
         'userEdit': usuarioAtual,
+        'ativo': true,//variavel para o soft delete
       });
 
       if (mounted) {

@@ -11,6 +11,8 @@ class Produto {
   final String descricao;
   final String? cod; // Opcional (sem asterisco no UML)
   final double? preco; 
+  final bool ativo;//variavel que desativa item excluido ao invez de exclui-lo de vdd
+  
 
   Produto({
     this.id,
@@ -23,6 +25,7 @@ class Produto {
     required this.descricao,
     this.cod,
     required this.preco, 
+    this.ativo = true,
   });
 
   // Transforma as informações da classe para plain text a fim de ser armazenada no firebase
@@ -38,6 +41,7 @@ class Produto {
       'descricao': descricao,
       'cod': cod,
       'preco': preco, 
+      'ativo': ativo,
     };
   }
 
@@ -53,6 +57,7 @@ class Produto {
       descricao: map['descricao'] ?? '',
       cod: map['cod'] ?? '',
       preco: (map['preco'] ?? 0.0).toDouble(), //puxa o preço do firebase e passa pra double
+      ativo: map['ativo'] ?? true,
       id: docId,
     );
   }

@@ -3,11 +3,33 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/produto_provider.dart';
 import '../providers/estoque_provider.dart';
-import '../providers/baixa_provider.dart';
 import '../models/produto_item.dart';
+import '../components/popup_produtos.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Verificação do nivel de permisão
+final perfilUsuarioProvider = StreamProvider<String>((ref) {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null || user.email == null) return Stream.value('leitor');
+
+  return FirebaseFirestore.instance
+      .collection('funcionarios')
+      .doc(user.email)
+      .snapshots()
+      .map((snapshot) {
+        if (snapshot.exists) {
+          return snapshot.data()?['perfil'].toString() ?? 'leitor';
+        }
+        return 'leitor';
+      });
+});
 
 class TelaHome extends ConsumerWidget {
-  const TelaHome({super.key});
+  // variavel para trocar para a aba produtos
+  final VoidCallback aoMudarParaProdutos;
+
+  const TelaHome({super.key, required this.aoMudarParaProdutos});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,26 +37,38 @@ class TelaHome extends ConsumerWidget {
 
     final produtosAsync = ref.watch(produtosProvider);
     final estoqueAsync = ref.watch(estoqueProvider);
-    final baixasAsync = ref.watch(baixaProvider);
+
+    // Verifica qual o perfil do usuario atual
+    final perfilAsync = ref.watch(perfilUsuarioProvider);
+    bool podeEditar = perfilAsync.maybeWhen(
+      data: (perfilString) {
+        final perfil = perfilString.toLowerCase();
+        return perfil.contains('administrador') || perfil.contains('estoquista');
+      },
+      orElse: () => false,
+    );
 
     String produtosValor = '-';
     String estoqueValor = '-';
-    String baixasValor = '-';
 
     produtosAsync.when(
-      data: (produtos) => produtosValor = produtos.length.toString(),
+      data: (produtos) {
+        //conta somente produtos ativos
+        final ativos = produtos.where((p) => p.ativo).length;
+        produtosValor = ativos.toString();
+      },
       loading: () => produtosValor = '...',
       error: (_, __) => produtosValor = 'Erro',
     );
+    
     estoqueAsync.when(
-      data: (estoque) => estoqueValor = estoque.length.toString(),
+      data: (estoque) {
+        // Soma as quantidades (qtd) de todos os lotes juntos
+        final totalItensFisicos = estoque.fold<int>(0, (soma, item) => soma + item.qtd);
+        estoqueValor = totalItensFisicos.toString();
+      },
       loading: () => estoqueValor = '...',
       error: (_, __) => estoqueValor = 'Erro',
-    );
-    baixasAsync.when(
-      data: (baixas) => baixasValor = baixas.length.toString(),
-      loading: () => baixasValor = '...',
-      error: (_, __) => baixasValor = 'Erro',
     );
 
     return SingleChildScrollView(
@@ -43,7 +77,8 @@ class TelaHome extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Título principal
-          const SizedBox(height: 60), // Espaço extra entre título e cards
+          const SizedBox(height: 60), 
+          
           // 1. CARDS DE RESUMO (PRODUTOS E ESTOQUE)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,25 +98,17 @@ class TelaHome extends ConsumerWidget {
                   descricao: 'Quantidade atual\nde itens no estoque',
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildResumoCard(
-                  titulo: 'Baixas',
-                  valor: baixasValor,
-                  descricao: 'Quantidade de baixas\nrealizadas',
-                ),
-              ),
             ],
           ),
-          const SizedBox(height: 40), // Espaço maior entre cards e lista
+          
+          const SizedBox(height: 40), 
+          
           // 2. LISTA DE REGISTROS RECENTES
           produtosAsync.when(
             data: (produtos) {
-              // Ordena produtos por data de cadastro (mais recentes primeiro)
               final produtosOrdenados = List<Produto>.from(produtos)
                 ..sort((a, b) => b.dataCad.compareTo(a.dataCad));
 
-              // Pega apenas os últimos 5 produtos
               final produtosRecentes = produtosOrdenados.take(5).toList();
 
               return Container(
@@ -113,6 +140,20 @@ class TelaHome extends ConsumerWidget {
                         .map(
                           (produto) => _buildItemRegistro(
                             '${produto.nome} - ${produto.marca}',
+                            () {
+                              // chama a função ao mudar para produtos
+                              aoMudarParaProdutos();
+
+                              // abre o popup sobre a aba se o usuario tiver permisão para editar
+                              if (podeEditar) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return PopupProdutos(produto: produto);
+                                  },
+                                );
+                              }
+                            },
                           ),
                         )
                         .toList(),
@@ -194,7 +235,6 @@ class TelaHome extends ConsumerWidget {
     );
   }
 
-  // Função para criar o layout repetido dos dois cards de cima
   Widget _buildResumoCard({
     required String titulo,
     required String valor,
@@ -250,28 +290,31 @@ class TelaHome extends ConsumerWidget {
     );
   }
 
-  // Função para criar as linhazinhas clicáveis da lista de recentes
-  Widget _buildItemRegistro(String texto) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              texto,
-              style: GoogleFonts.poppins(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
+  Widget _buildItemRegistro(String texto, VoidCallback aoClicar) {
+    return GestureDetector(
+      onTap: aoClicar, 
+      behavior: HitTestBehavior.opaque, 
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                texto,
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
             ),
-          ),
-          const SizedBox(width: 8),
-          const Icon(Icons.chevron_right, color: Colors.black54, size: 20),
-        ],
+            const SizedBox(width: 8),
+            const Icon(Icons.chevron_right, color: Colors.black54, size: 20),
+          ],
+        ),
       ),
     );
   }
