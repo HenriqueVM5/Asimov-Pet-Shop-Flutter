@@ -427,35 +427,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             const SizedBox(height: 5),
 
-                            // Botões Sociais (Google / Facebook)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: _loginGoogle,
-                                  child: CircleAvatar(
-                                    radius: 24,
-                                    backgroundColor: Colors.transparent,
-                                    child: Image.asset(
+                            // BOTÃO: ENTRE COM GOOGLE
+                            Center(
+                              child: GestureDetector(
+                                onTap: _loginGoogle,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize
+                                      .min, // Agrupa o ícone e o texto no centro
+                                  children: [
+                                    Image.asset(
                                       'assets/images/google_logo.png',
-                                      height: 65,
+                                      height: 44, // Altura conforme seu Figma
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(width: 70),
-                                GestureDetector(
-                                  onTap: () => print("Login Facebook"),
-                                  child: const CircleAvatar(
-                                    radius: 24,
-                                    backgroundColor: Colors.transparent,
-                                    child: Icon(
-                                      Icons.facebook,
-                                      size: 48,
-                                      color: Colors.blue,
+                                    const SizedBox(
+                                      width: 12,
+                                    ), // Espaço entre o ícone e a fita
+                                    Text(
+                                      'Entre com Google',
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.50,
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
 
                             const SizedBox(height: 0),
