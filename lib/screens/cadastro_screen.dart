@@ -483,60 +483,59 @@ class _CadastroScreenState extends State<CadastroScreen> {
 
                       const SizedBox(height: 10),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Logo Google
-                          GestureDetector(
-                            onTap: () async {
-                              final authProvider = Provider.of<AuthProvider>(
-                                context,
-                                listen: false,
-                              );
+                      // BOTÃO: ENTRE COM GOOGLE
+                      Center(
+                        child: GestureDetector(
+                          onTap: () async {
+                            final authProvider = Provider.of<AuthProvider>(
+                              context,
+                              listen: false,
+                            );
 
-                              final String? erro = await authProvider
-                                  .signInWithGoogle();
+                            final String? erro = await authProvider
+                                .signInWithGoogle();
 
-                              if (erro != null) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).showSnackBar(SnackBar(content: Text(erro)));
-                                }
-                              } else {
-                                if (context.mounted) {
-                                  // Substituído o pushNamed pelo RemoveUntil
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const TelaPrincipal(),
-                                    ),
-                                    (route) => false,
-                                  );
-                                }
+                            if (erro != null) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(SnackBar(content: Text(erro)));
                               }
-                            },
-
-                            child: Image.asset(
-                              'assets/images/google_logo.png',
-                              height: 50,
-                            ),
+                            } else {
+                              if (context.mounted) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const TelaPrincipal(),
+                                  ),
+                                  (route) => false,
+                                );
+                              }
+                            }
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize
+                                .min, // Mantém o ícone e texto juntos no centro
+                            children: [
+                              Image.asset(
+                                'assets/images/google_logo.png',
+                                height: 44, // Altura baseada no Figma
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ), // Espaçamento entre ícone e texto
+                              Text(
+                                'Entre com Google',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.50,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(
-                            width: 80,
-                          ), // Espaço entre os dois botões
-                          // Logo Facebook
-                          GestureDetector(
-                            onTap: () {
-                              /* Lógica de login Facebook */
-                            },
-                            child: Image.asset(
-                              'assets/images/facebook_logo.png',
-                              height: 50,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
 
                       const SizedBox(height: 40),

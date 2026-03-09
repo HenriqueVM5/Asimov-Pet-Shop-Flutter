@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../providers/auth_provider.dart';
+import '../screens/pag_inicial_screen.dart';
 
 class TelaPerfil extends StatefulWidget {
   const TelaPerfil({super.key});
@@ -96,55 +97,45 @@ class _TelaPerfilState extends State<TelaPerfil> {
                           color: Colors.white,
                         ),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF0A3351),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt_rounded,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 32),
+
                 _buildCampoPerfil(
                   label: 'Nome',
                   controller: _nomeController,
                   icone: Icons.edit_outlined,
                 ),
-                const SizedBox(height: 16),
+
+                const SizedBox(height: 12), // Reduzido de 16 para 12
+
                 _buildCampoPerfil(
                   label: 'Email',
                   controller: _emailController,
                   icone: Icons.lock,
                   readOnly: true,
                 ),
-                const SizedBox(height: 16),
+
+                const SizedBox(height: 12), // Reduzido de 16 para 12
+
                 _buildCampoPerfil(
                   label: 'Cargo',
                   controller: _cargoController,
                   icone: Icons.lock,
                   readOnly: true,
                 ),
-                const SizedBox(height: 48),
+
+                const SizedBox(
+                  height: 32,
+                ),
+                // Botão de Salvar Alterações
                 SizedBox(
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () async {
-                      // 1. Pega o valor digitado e remove espaços em branco nas pontas
                       final novoNome = _nomeController.text.trim();
 
-                      // 2. Validação básica: não permite salvar se o nome estiver vazio
                       if (novoNome.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -155,24 +146,19 @@ class _TelaPerfilState extends State<TelaPerfil> {
                         return;
                       }
 
-                      // 3. Mostra o loading na tela
                       setState(() {
                         _isLoading = true;
                       });
 
-                      // 4. Chama o provider para atualizar no Firebase
                       final erro = await _authProvider?.updateNomeUsuario(
                         novoNome,
                       );
 
-                      // 5. Tira o loading da tela
                       setState(() {
                         _isLoading = false;
                       });
 
-                      // 6. Mostra o resultado para o usuário
-                      if (!mounted)
-                        return; // Garante que a tela ainda está aberta antes de mostrar o aviso
+                      if (!mounted) return;
 
                       if (erro == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -203,6 +189,52 @@ class _TelaPerfilState extends State<TelaPerfil> {
                         color: const Color(0xFF0A3351),
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 12,
+                ),
+                // Botão de Log out
+                Center(
+                  child: SizedBox(
+                    width: 198,
+                    height: 40,
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        // Faz o logout pelo Firebase
+                        await FirebaseAuth.instance.signOut();
+
+                        // Verifica se a tela ainda está montada antes de navegar
+                        if (!mounted) return;
+
+                        // Redireciona para a tela inicial e limpa a pilha de telas anteriores
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PagInicialScreen(),
+                          ),
+                          (Route<dynamic> route) => false,
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(
+                          color: Color(0xFF365665),
+                          width: 1,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      child: Text(
+                        'Log out',
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFFFF262B),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),

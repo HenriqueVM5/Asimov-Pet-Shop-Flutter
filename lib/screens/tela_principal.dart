@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pet_shop_app/screens/home_screen.dart';
 import 'package:pet_shop_app/screens/profile_screen.dart';
+import 'package:pet_shop_app/screens/home_screen.dart';
+import 'package:pet_shop_app/screens/profile_screen.dart';
 import 'package:pet_shop_app/screens/tela_estoque.dart';
 import 'package:pet_shop_app/screens/tela_produtos.dart';
 import 'package:pet_shop_app/components/fundo_telas.dart';
