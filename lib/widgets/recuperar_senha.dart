@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 
 class RecuperarSenhaDialog extends StatefulWidget {
   const RecuperarSenhaDialog({super.key});
@@ -10,6 +12,7 @@ class RecuperarSenhaDialog extends StatefulWidget {
 
 class _RecuperarSenhaDialogState extends State<RecuperarSenhaDialog> {
   final _emailRecuperacaoController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -117,11 +120,7 @@ class _RecuperarSenhaDialogState extends State<RecuperarSenhaDialog> {
                   width: double.infinity,
                   height: 46,
                   child: ElevatedButton(
-                    onPressed: () {
-                      final email = _emailRecuperacaoController.text;
-                      print("Enviar recuperação para: $email");
-                      // TODO: Chamar o AuthProvider aqui
-                    },
+                    onPressed: _isLoading ? null : _enviarEmailRecuperacao,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF8AD8FF),
                       shape: RoundedRectangleBorder(
@@ -131,14 +130,25 @@ class _RecuperarSenhaDialogState extends State<RecuperarSenhaDialog> {
                     ),
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text(
-                        'Enviar link de recuperação',
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFF365665),
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xFF365665),
+                                ),
+                              ),
+                            )
+                          : Text(
+                              'Enviar link de recuperação',
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFF365665),
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                     ),
                   ),
                 ),
@@ -162,5 +172,54 @@ class _RecuperarSenhaDialogState extends State<RecuperarSenhaDialog> {
         ],
       ),
     );
+  }
+
+  Future<void> _enviarEmailRecuperacao() async {
+    final email = _emailRecuperacaoController.text.trim();
+
+    // Validação básica do email
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, digite um email'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final resultado = await authProvider.sendPasswordResetEmail(email);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (resultado == null) {
+      // Sucesso
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Email enviado para $email. Verifique sua caixa de entrada.',
+          ),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      // Fecha o diálogo após sucesso
+      Navigator.of(context).pop();
+    } else {
+      // Erro
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(resultado),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
   }
 }
