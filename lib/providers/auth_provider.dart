@@ -177,4 +177,33 @@ class AuthProvider extends ChangeNotifier {
       return 'Erro inesperado: $e';
     }
   }
+
+  /// Envia um email de recuperação de senha para o usuário
+  Future<String?> sendPasswordResetEmail(String email) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+
+      isLoading = false;
+      notifyListeners();
+      return null; // null = sucesso
+    } on FirebaseAuthException catch (e) {
+      isLoading = false;
+      notifyListeners();
+
+      // Tratamento de erros comuns
+      if (e.code == 'user-not-found') {
+        return 'Nenhuma conta associada a este email.';
+      } else if (e.code == 'invalid-email') {
+        return 'O formato do email é inválido.';
+      }
+      return 'Erro ao enviar email de recuperação: ${e.message}';
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+      return 'Erro inesperado: $e';
+    }
+  }
 }
