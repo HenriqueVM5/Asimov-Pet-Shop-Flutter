@@ -97,23 +97,6 @@ class _TelaPerfilState extends State<TelaPerfil> {
                           color: Colors.white,
                         ),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF0A3351),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt_rounded,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -145,7 +128,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
 
                 const SizedBox(
                   height: 32,
-                ), // Reduzido de 48 para 32 (Distância dos campos para o primeiro botão)
+                ),
                 // Botão de Salvar Alterações
                 SizedBox(
                   height: 50,
@@ -213,7 +196,7 @@ class _TelaPerfilState extends State<TelaPerfil> {
 
                 const SizedBox(
                   height: 12,
-                ), // AQUI FOI REDUZIDO DE 32 para 12 (Espaço entre os dois botões)
+                ),
                 // Botão de Log out
                 Center(
                   child: SizedBox(
